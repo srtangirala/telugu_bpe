@@ -4,7 +4,7 @@ emoji: 🔤
 colorFrom: blue
 colorTo: purple
 sdk: gradio
-sdk_version: 4.0.0
+sdk_version: 5.12.0
 app_file: app.py
 pinned: false
 ---
@@ -24,4 +24,4 @@ This is a demo of a BPE (Byte Pair Encoding) tokenizer trained on Telugu text. Y
 
 1. Enter or paste Telugu text in the input box
 2. Click "Tokenize"
-3. View the resulting tokens and statistics 
+3. View the resulting tokens and statistics
