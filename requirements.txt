@@ -1,0 +1,4 @@
+tqdm>=4.65.0
+numpy>=1.24.0
+logging>=0.5.1.2 
+gradio>=4.0.0 
