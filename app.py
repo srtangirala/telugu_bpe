@@ -14,7 +14,7 @@ def load_model(model_path: str = 'models/telugu_bpe'):
     with open(model_path / 'vocab.json', 'r', encoding='utf-8') as f:
         vocab = json.load(f)
     
-    # Load merges from pkl file instead of txt
+    # Load merges from pkl file
     with open(model_path / 'merges.pkl', 'rb') as f:
         merges = pickle.load(f)
     
@@ -34,8 +34,11 @@ def process_text(text: str):
         # Calculate compression ratio
         ratio = calculate_compression_ratio(text, encoded)
         
+        # Create reverse vocabulary mapping (id -> token)
+        vocab_reverse = {idx: token for token, idx in tokenizer.vocab.items()}
+        
         # Get the actual tokens for display
-        tokens = [tokenizer.vocab_reverse[idx] for idx in encoded]
+        tokens = [vocab_reverse[idx] for idx in encoded]
         
         # Format the results
         token_display = " ".join(tokens)
