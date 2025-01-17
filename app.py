@@ -5,6 +5,19 @@ from src.utils import calculate_compression_ratio
 import json
 import pickle
 from pathlib import Path
+import random
+
+def generate_distinct_colors(n):
+    """Generate n visually distinct colors."""
+    colors = [
+        "#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEEAD",
+        "#D4A5A5", "#9B59B6", "#3498DB", "#E67E22", "#1ABC9C",
+        "#F1C40F", "#E74C3C", "#2ECC71", "#34495E", "#95A5A6"
+    ]
+    # If we need more colors than in our predefined list, generate random ones
+    while len(colors) < n:
+        colors.append(f"#{random.randint(0, 0xFFFFFF):06x}")
+    return colors[:n]
 
 def load_model(model_path: str = 'models/telugu_bpe'):
     """Load the trained BPE model."""
@@ -27,22 +40,29 @@ def process_text(text: str):
     
     try:
         tokenizer = load_model()
-        
-        # Tokenize the text
         encoded = tokenizer.encode(text)
-        
-        # Calculate compression ratio
         ratio = calculate_compression_ratio(text, encoded)
         
-        # Create reverse vocabulary mapping (id -> token)
+        # Create reverse vocabulary mapping
         vocab_reverse = {idx: token for token, idx in tokenizer.vocab.items()}
         
-        # Get the actual tokens for display
-        tokens = [vocab_reverse[idx] for idx in encoded]
+        # Generate distinct colors for tokens
+        colors = generate_distinct_colors(len(tokenizer.vocab))
+        color_map = {idx: color for idx, color in enumerate(colors)}
         
-        # Format the results
-        token_display = " ".join(tokens)
-        stats = f"Number of tokens: {len(encoded)}\nCompression ratio: {ratio:.2f}"
+        # Format tokens with their IDs and colors
+        tokens_with_ids = []
+        for idx in encoded:
+            token = vocab_reverse[idx]
+            color = color_map[idx]
+            tokens_with_ids.append(f'<span style="background-color: {color}; padding: 2px 4px; margin: 2px; border-radius: 3px;">{token} ({idx})</span>')
+        
+        # Join tokens with HTML formatting
+        token_display = " ".join(tokens_with_ids)
+        
+        stats = (f"Number of tokens: {len(encoded)}\n"
+                f"Compression ratio: {ratio:.2f}\n"
+                f"Vocabulary size: {len(tokenizer.vocab)}")
         
         return token_display, stats
     
@@ -65,14 +85,12 @@ with gr.Blocks(title="Telugu BPE Tokenizer") as demo:
         submit_btn = gr.Button("Tokenize")
     
     with gr.Row():
-        tokens_output = gr.Textbox(
+        tokens_output = gr.HTML(
             label="Tokens",
-            lines=5,
-            interactive=False
         )
         stats_output = gr.Textbox(
             label="Statistics",
-            lines=2,
+            lines=3,
             interactive=False
         )
     
