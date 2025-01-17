@@ -3,6 +3,7 @@ from src.tokenizer import Tokenizer
 from src.bpe_trainer import BPETrainer
 from src.utils import calculate_compression_ratio
 import json
+import pickle
 from pathlib import Path
 
 def load_model(model_path: str = 'models/telugu_bpe'):
@@ -13,9 +14,9 @@ def load_model(model_path: str = 'models/telugu_bpe'):
     with open(model_path / 'vocab.json', 'r', encoding='utf-8') as f:
         vocab = json.load(f)
     
-    # Load merges
-    with open(model_path / 'merges.txt', 'r', encoding='utf-8') as f:
-        merges = [tuple(line.strip().split()) for line in f]
+    # Load merges from pkl file instead of txt
+    with open(model_path / 'merges.pkl', 'rb') as f:
+        merges = pickle.load(f)
     
     return Tokenizer(vocab, merges)
 
