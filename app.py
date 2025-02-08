@@ -84,6 +84,18 @@ with gr.Blocks(title="Telugu BPE Tokenizer") as demo:
     with gr.Row():
         submit_btn = gr.Button("Tokenize")
     
+    # Add examples section
+    gr.Examples(
+        examples=[
+            "నమస్కారం! మీరు ఎలా ఉన్నారు?",
+            "తెలుగు భాష చాలా అందమైన భాష.",
+            "ప్రతి పూవు తన సొంత సౌందర్యాన్ని కలిగి ఉంటుంది.",
+            "జీవితంలో ప్రతి రోజు కొత్త అవకాశం."
+        ],
+        inputs=input_text,
+        label="Click on any example to load it"
+    )
+    
     with gr.Row():
         tokens_output = gr.HTML(
             label="Tokens",
